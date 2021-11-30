@@ -18,12 +18,10 @@ exports.checkID = (req, res, next, val) => {
 exports.checkBody = (req, res, next) => {
   const name = req.body.name;
   const price = req.body.price;
-  console.log(name);
-  console.log(price);
   if (!name || !price) {
     return res.status(404).json({
       status: 'Fail',
-      message: 'Invalid ID',
+      message: 'Missing name or price',
     });
   }
   next();
