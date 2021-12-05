@@ -5,5 +5,4 @@ Content-Type: application/json
     "name": "Test tour",
     "duration": 10,
     "difficulty": "easy",
-    "price": 222
 }
