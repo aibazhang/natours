@@ -1,8 +1,10 @@
 GET http://127.0.0.1:3000/api/v1/tours
-    ?duration[gte]=5
-    &difficulty=easy
-    &price[lt]=1500
-    &page=2
-    &limit=10
+    ?fields=name,price,ratingsAverage
+    # ?sort=-price,-ratingsAverage
+    # ?duration[gte]=5
+    # &difficulty=easy
+    # &price[lt]=1500
+    # &page=2
+    # &limit=10
 
 
