@@ -75,7 +75,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // DOCUMENT HIDDLEWARE: runs before .save() and .create()
-// this is pointing current document
+// this is pointing current document object
 // tourSchema.pre('save', function (next) {
 //   this.slug = slugify(this.name, { lower: true });
 //   next();
@@ -92,7 +92,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 // });
 
 // QUERY MIDDLEWARE
-// this is pointing current query
+// this is pointing current query object
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
@@ -102,6 +102,14 @@ tourSchema.pre(/^find/, function (next) {
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} millisceonds`);
   console.log(docs);
+  next();
+});
+
+// AGREGATION MIDDLEWARE
+// this is pointing current aggregation object
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
   next();
 });
 
