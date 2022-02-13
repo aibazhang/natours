@@ -1,8 +1,8 @@
 # GET http://127.0.0.1:3000/api/v1/tours/top-5-cheap
 GET http://127.0.0.1:3000/api/v1/tours/
-    ?fields=name,price,ratingsAverage
-    &page=3
-    &limit=3
+    # ?fields=name,price,ratingAverage
+    # &page=3
+    # &limit=3
     
     # ?fields=name,price,ratingsAverage
     # ?sort=-price,-ratingsAverage
