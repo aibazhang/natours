@@ -59,6 +59,10 @@ const tourSchema = mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -71,6 +75,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // DOCUMENT HIDDLEWARE: runs before .save() and .create()
+// this is pointing current document
 // tourSchema.pre('save', function (next) {
 //   this.slug = slugify(this.name, { lower: true });
 //   next();
@@ -81,8 +86,22 @@ tourSchema.virtual('durationWeeks').get(function () {
 //   next();
 // });
 
-tourSchema.post('save', function (doc, next) {
-  console.log(doc);
+// tourSchema.post('save', function (doc, next) {
+//   console.log(doc);
+//   next();
+// });
+
+// QUERY MIDDLEWARE
+// this is pointing current query
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} millisceonds`);
+  console.log(docs);
   next();
 });
 
