@@ -1,9 +1,7 @@
 
-PATCH  http://127.0.0.1:3000/api/v1/tours/4
+PATCH  http://127.0.0.1:3000/api/v1/tours/61b5b3aa641f427e12ef6af9
 Content-Type: application/json
 
 {
-    "name": "Test tour 2",
-    "duration": 50,
-    "difficulty": "easy"
+    "ratingAverage": 4.9
 }
