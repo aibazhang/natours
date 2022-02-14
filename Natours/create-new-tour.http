@@ -2,12 +2,14 @@ POST http://127.0.0.1:3000/api/v1/tours
 Content-Type: application/json
 
 {
-    "name": "The secret Tour",
+    "name": "The Tours prices Four",
     "duration": 5,
     "maxGroupSize": 25,
     "difficulty": "easy",
     "price": 999,
+    "priceDiscount": 100,
     "summary": "Breathtaking hike through the Canadian Banff National Park",
     "imageCover": "tour-1-cover.jpg",
-    "secretTour": true
+    "secretTour": true,
+    "ratingAverage": 4
   }
