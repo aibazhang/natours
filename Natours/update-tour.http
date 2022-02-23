@@ -3,5 +3,6 @@ PATCH  http://127.0.0.1:3000/api/v1/tours/61b5b3aa641f427e12ef6af9
 Content-Type: application/json
 
 {
-    "ratingAverage": 4.9
+    "ratingAverage": 6,
+    "name": "short"
 }
