@@ -1,4 +1,3 @@
-const { del } = require('express/lib/application');
 const AppError = require('../utils/appError');
 
 const handleCastErrorDB = (err) => {
