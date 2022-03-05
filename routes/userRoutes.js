@@ -13,6 +13,7 @@ router.post(
   authController.protect,
   authController.updatePassword
 );
+router.patch('/updateMe', authController.protect, userController.updateMe);
 
 router.param('id', (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
