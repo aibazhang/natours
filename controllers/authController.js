@@ -6,7 +6,6 @@ const catchAsync = require('../utils/catchAsync');
 const dotenv = require('dotenv');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
-const { use } = require('../routes/tourRoutes');
 
 const siginToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -176,6 +175,34 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) Update changedPasswordAt property for the user
 
   // 4) Log the user in, send JWT
+  const token = siginToken(user._id);
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { email, password, newPassword } = req.body;
+
+  // 1) Get user from collection
+  if (!email || !password) {
+    return next(new AppError('Please provide email and password!', 400));
+  }
+
+  // 2) Check if POSTed current pasword is correct
+  const user = await User.findOne({ email }).select('+password');
+
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    return next(new AppError('Incorrect email or password!', 401));
+  }
+
+  // 3) If so, update passowrd
+  user.password = newPassword;
+  this.passwordChangeAt = Date.now();
+  await user.save();
+
+  // 4) Log user in, send JWT
   const token = siginToken(user._id);
   res.status(200).json({
     status: 'success',
