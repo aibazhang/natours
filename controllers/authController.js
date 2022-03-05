@@ -13,6 +13,18 @@ const siginToken = (id) => {
   });
 };
 
+const createSendToken = (user, statusCode, res) => {
+  const token = siginToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user: user,
+    },
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -24,15 +36,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
-  const token = siginToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -50,11 +54,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) If everything ok, send token to client
-  const token = siginToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -175,37 +175,24 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) Update changedPasswordAt property for the user
 
   // 4) Log the user in, send JWT
-  const token = siginToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  const { email, password, newPassword } = req.body;
-
   // 1) Get user from collection
-  if (!email || !password) {
-    return next(new AppError('Please provide email and password!', 400));
-  }
+  const user = await User.findById(req.user.id).select('+password');
 
   // 2) Check if POSTed current pasword is correct
-  const user = await User.findOne({ email }).select('+password');
-
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or password!', 401));
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is wrong', 401));
   }
 
   // 3) If so, update passowrd
-  user.password = newPassword;
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
   this.passwordChangeAt = Date.now();
   await user.save();
 
   // 4) Log user in, send JWT
-  const token = siginToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
