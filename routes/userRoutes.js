@@ -1,8 +1,20 @@
 const express = require('express');
 const userController = require('./../controllers/userController');
+const authController = require('./../controllers/authController');
 
-// 3) Route
 const router = express.Router();
+
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
+router.post(
+  '/updateMyPassword',
+  authController.protect,
+  authController.updatePassword
+);
+router.patch('/updateMe', authController.protect, userController.updateMe);
+router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
 router.param('id', (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
