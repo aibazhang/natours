@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -12,6 +13,12 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+// Serving staic files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP haeders
 app.use(helmet());
@@ -53,9 +60,6 @@ app.use(
   })
 );
 
-// Serving staic files
-app.use(express.static(`${__dirname}/public/`));
-
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -63,6 +67,13 @@ app.use((req, res, next) => {
 });
 
 // Mount Routes
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Jack',
+  });
+});
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
