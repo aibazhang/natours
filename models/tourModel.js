@@ -93,12 +93,14 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+tourSchema.index({ slug: 1 });
+
 // DOCUMENT HIDDLEWARE: runs before .save() and .create()
 // this is pointing current document object
-// tourSchema.pre('save', function (next) {
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save document...');
